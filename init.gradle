@@ -1,0 +1,75 @@
+import java.util.concurrent.TimeUnit
+// ext {
+//     nexusUser='skbank'
+//     nexusPassword='1qazXSW@'
+//     nexusUrl='https://nexus.bluetouch.com.tw/repository/maven-public/'
+// }
+
+println """\
+Welcome to Gradle $gradle.gradleVersion - http://www.gradle.org
+Gradle home is set to: $gradle.gradleHomeDir
+Gradle user directory is set to: $gradle.gradleUserHomeDir
+Gradle starting parameter is set to: $gradle.startParameter
+"""
+
+println 'init.gradle: In initialization phase'
+// initscript {
+//     repositories {
+//         maven {
+//             credentials {
+//                 username = 'skbank'
+//                 password = '1qazXSW@'
+//             }
+//             url 'https://nexus.bluetouch.com.tw/repository/maven-public/'
+//         }
+//     }
+//     dependencies {
+//         classpath(
+//         )
+//     }
+// }
+
+// buildscript {
+//     repositories {
+//         maven {
+//             credentials {
+//                 username = nexusUser
+//                 password = nexusPassword
+//             }
+//             url nexusUrl
+//         }
+//     }
+// }
+
+allprojects {
+    buildscript {
+        repositories {
+            maven {
+                credentials {
+					allowInsecureProtocol = true
+                    username = nexusUser
+                    password = nexusPassword
+                }
+                url nexusUrl
+            }
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+				allowInsecureProtocol = true
+                username = nexusUser
+                password = nexusPassword
+            }
+            url nexusUrl
+        }
+    }
+    configurations.all {
+        resolutionStrategy {
+            // cache dynamic versions for 10 minutes
+            cacheDynamicVersionsFor 10 * 60, TimeUnit.SECONDS
+            // don't cache changing modules at all
+            cacheChangingModulesFor 0, TimeUnit.SECONDS
+        }
+    }
+}
